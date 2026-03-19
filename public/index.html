@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kavach — SOS Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #FFF8F0;
+            color: #1C1B20;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ─────────────────────────────────── */
+        header {
+            background: linear-gradient(135deg, #FF6B2B, #E64A19);
+            padding: 0 32px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 24px rgba(255, 107, 43, 0.35);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        header h1 {
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 4px;
+        }
+
+        header p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 1px;
+        }
+
+        .live-badge {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            animation: livePulse 2s infinite;
+        }
+
+        @keyframes livePulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        /* ── STATS ROW ──────────────────────────────── */
+        .stats {
+            display: flex;
+            gap: 16px;
+            padding: 24px 32px 0;
+        }
+
+        .stat {
+            background: #fff;
+            border: 1.5px solid #EDE8E0;
+            border-radius: 16px;
+            padding: 18px 24px;
+            min-width: 140px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat .num {
+            font-size: 34px;
+            font-weight: 900;
+            color: #FF6B2B;
+            line-height: 1;
+        }
+
+        .stat .lbl {
+            font-size: 12px;
+            color: #6B6880;
+            margin-top: 4px;
+        }
+
+        /* ── CONTROLS ───────────────────────────────── */
+        .controls {
+            padding: 20px 32px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button {
+            padding: 9px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.15s;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        .btn-refresh {
+            background: #FF6B2B;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(255, 107, 43, 0.3);
+        }
+
+        .btn-clear {
+            background: #fff;
+            color: #6B6880;
+            border: 1.5px solid #EDE8E0;
+        }
+
+        .auto-lbl {
+            margin-left: auto;
+            font-size: 12px;
+            color: #6B6880;
+        }
+
+        /* ── EVENT CARDS ────────────────────────────── */
+        .events {
+            padding: 20px 32px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .event-card {
+            background: #fff;
+            border: 1.5px solid #EDE8E0;
+            border-left: 5px solid #FF6B2B;
+            border-radius: 16px;
+            padding: 20px 24px;
+            position: relative;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+            transition: box-shadow 0.2s, transform 0.2s;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .event-card:hover {
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .event-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .sos-badge {
+            background: #FFF0EB;
+            color: #E64A19;
+            border: 1px solid rgba(230, 74, 25, 0.25);
+            padding: 5px 13px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .event-time {
+            font-size: 13px;
+            color: #6B6880;
+        }
+
+        .event-id {
+            margin-left: auto;
+            font-size: 11px;
+            color: #C4BDB6;
+        }
+
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        .info-box {
+            background: #FFF8F0;
+            border: 1px solid #EDE8E0;
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+
+        .info-box .key {
+            font-size: 10px;
+            color: #6B6880;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+
+        .info-box .val {
+            font-size: 14px;
+            color: #1C1B20;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .map-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            background: #E8F5E9;
+            color: #2E7D32;
+            border: 1.5px solid rgba(46, 125, 50, 0.25);
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background 0.15s;
+        }
+
+        .map-btn:hover {
+            background: #C8E6C9;
+        }
+
+        .del-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #FFF0EB;
+            color: #E64A19;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: background 0.15s;
+        }
+
+        .del-btn:hover {
+            background: #FFCCBC;
+        }
+
+        /* ── EMPTY STATE ────────────────────────────── */
+        .empty {
+            text-align: center;
+            padding: 80px 20px;
+            color: #6B6880;
+        }
+
+        .empty-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        .empty h3 {
+            font-size: 18px;
+            color: #1C1B20;
+            margin-bottom: 8px;
+        }
+
+        /* ── RESPONSIVE ─────────────────────────────── */
+        @media (max-width: 600px) {
+            header {
+                padding: 0 16px;
+            }
+
+            .stats,
+            .controls,
+            .events {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .stats {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-icon">🛡️</div>
+        <div>
+            <h1>KAVACH</h1>
+            <p>Live SOS Alert Dashboard • कवच</p>
+        </div>
+        <span class="live-badge" id="liveBadge">● LIVE</span>
+    </header>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="num" id="totalCount">0</div>
+            <div class="lbl">Total SOS Alerts</div>
+        </div>
+        <div class="stat">
+            <div class="num" id="todayCount">0</div>
+            <div class="lbl">Today</div>
+        </div>
+        <div class="stat">
+            <div class="num" id="lastTime">—</div>
+            <div class="lbl">Last Alert</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-refresh" onclick="loadEvents()">🔄 Refresh</button>
+        <button class="btn-clear" onclick="clearAll()">🗑️ Clear All</button>
+        <span class="auto-lbl">Auto-refresh every 10 seconds</span>
+    </div>
+
+    <div class="events" id="eventList"></div>
+
+    <script>
+        async function loadEvents() {
+            try {
+                const res = await fetch('/api/sos');
+                const events = await res.json();
+                renderEvents(events);
+                updateStats(events);
+            } catch (e) {
+                console.error('Fetch error:', e);
+            }
+        }
+
+        function renderEvents(events) {
+            const container = document.getElementById('eventList');
+            if (!events.length) {
+                container.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">🛡️</div>
+          <h3>No SOS alerts received yet</h3>
+          <p>When Kavach triggers, alerts will appear here instantly</p>
+        </div>`;
+                return;
+            }
+
+            container.innerHTML = events.map(e => `
+      <div class="event-card" id="card-${e.id}">
+        <button class="del-btn" onclick="deleteEvent(${e.id})">✕</button>
+        <div class="event-top">
+          <span class="sos-badge">🚨 ${e.event}</span>
+          <span class="event-time">${fmt(e.timestamp)}</span>
+          <span class="event-id">#${e.id}</span>
+        </div>
+        <div class="event-grid">
+          <div class="info-box">
+            <div class="key">Device</div>
+            <div class="val">${e.device_name || '—'}</div>
+          </div>
+          <div class="info-box">
+            <div class="key">IP Address</div>
+            <div class="val">${e.device_ip || '—'}</div>
+          </div>
+          <div class="info-box">
+            <div class="key">Latitude</div>
+            <div class="val">${e.latitude ?? '—'}</div>
+          </div>
+          <div class="info-box">
+            <div class="key">Longitude</div>
+            <div class="val">${e.longitude ?? '—'}</div>
+          </div>
+          <div class="info-box">
+            <div class="key">Received At</div>
+            <div class="val">${fmt(e.received_at)}</div>
+          </div>
+        </div>
+        ${e.maps_link
+                    ? `<a class="map-btn" href="${e.maps_link}" target="_blank">📍 Open in Google Maps</a>`
+                    : ''}
+      </div>`).join('');
+        }
+
+        function updateStats(events) {
+            document.getElementById('totalCount').textContent = events.length;
+            const today = new Date().toDateString();
+            document.getElementById('todayCount').textContent =
+                events.filter(e => new Date(e.timestamp).toDateString() === today).length;
+            if (events.length) {
+                const d = new Date(events[0].timestamp);
+                document.getElementById('lastTime').textContent =
+                    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+        }
+
+        async function deleteEvent(id) {
+            await fetch(`/api/sos/${id}`, { method: 'DELETE' });
+            document.getElementById(`card-${id}`)?.remove();
+            loadEvents();
+        }
+
+        async function clearAll() {
+            if (!confirm('Clear all SOS alerts?')) return;
+            const events = await (await fetch('/api/sos')).json();
+            await Promise.all(events.map(e => fetch(`/api/sos/${e.id}`, { method: 'DELETE' })));
+            loadEvents();
+        }
+
+        function fmt(iso) {
+            if (!iso) return '—';
+            return new Date(iso).toLocaleString();
+        }
+
+        loadEvents();
+        setInterval(loadEvents, 10000);
+    </script>
+
+</body>
+
+</html>
