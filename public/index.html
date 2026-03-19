@@ -19,7 +19,6 @@
             min-height: 100vh;
         }
 
-        /* ── HEADER ─────────────────────────────────── */
         header {
             background: linear-gradient(135deg, #FF6B2B, #E64A19);
             padding: 0 32px;
@@ -74,19 +73,19 @@
 
             0%,
             100% {
-                opacity: 1;
+                opacity: 1
             }
 
             50% {
-                opacity: 0.6;
+                opacity: 0.6
             }
         }
 
-        /* ── STATS ROW ──────────────────────────────── */
         .stats {
             display: flex;
             gap: 16px;
             padding: 24px 32px 0;
+            flex-wrap: wrap;
         }
 
         .stat {
@@ -111,12 +110,12 @@
             margin-top: 4px;
         }
 
-        /* ── CONTROLS ───────────────────────────────── */
         .controls {
             padding: 20px 32px 0;
             display: flex;
             gap: 10px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         button {
@@ -151,7 +150,6 @@
             color: #6B6880;
         }
 
-        /* ── EVENT CARDS ────────────────────────────── */
         .events {
             padding: 20px 32px 40px;
             display: flex;
@@ -174,12 +172,12 @@
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-10px)
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0)
             }
         }
 
@@ -193,6 +191,7 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 16px;
+            flex-wrap: wrap;
         }
 
         .sos-badge {
@@ -203,7 +202,6 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 800;
-            letter-spacing: 0.5px;
         }
 
         .event-time {
@@ -245,15 +243,21 @@
             word-break: break-all;
         }
 
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
         .map-btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            margin-top: 12px;
             background: #E8F5E9;
             color: #2E7D32;
             border: 1.5px solid rgba(46, 125, 50, 0.25);
-            padding: 8px 16px;
+            padding: 9px 16px;
             border-radius: 10px;
             text-decoration: none;
             font-size: 13px;
@@ -263,6 +267,39 @@
 
         .map-btn:hover {
             background: #C8E6C9;
+        }
+
+        .track-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #FFF0EB;
+            color: #E64A19;
+            border: 1.5px solid rgba(230, 74, 25, 0.25);
+            padding: 9px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background 0.15s;
+            animation: trackPulse 1.5s infinite;
+        }
+
+        @keyframes trackPulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.7
+            }
+        }
+
+        .track-btn:hover {
+            background: #FFCCBC;
+            animation: none;
         }
 
         .del-btn {
@@ -280,14 +317,12 @@
             justify-content: center;
             cursor: pointer;
             border: none;
-            transition: background 0.15s;
         }
 
         .del-btn:hover {
             background: #FFCCBC;
         }
 
-        /* ── EMPTY STATE ────────────────────────────── */
         .empty {
             text-align: center;
             padding: 80px 20px;
@@ -306,21 +341,14 @@
             margin-bottom: 8px;
         }
 
-        /* ── RESPONSIVE ─────────────────────────────── */
-        @media (max-width: 600px) {
-            header {
-                padding: 0 16px;
-            }
+        @media(max-width:600px) {
 
+            header,
             .stats,
             .controls,
             .events {
                 padding-left: 16px;
                 padding-right: 16px;
-            }
-
-            .stats {
-                flex-wrap: wrap;
             }
         }
     </style>
@@ -334,7 +362,7 @@
             <h1>KAVACH</h1>
             <p>Live SOS Alert Dashboard • कवच</p>
         </div>
-        <span class="live-badge" id="liveBadge">● LIVE</span>
+        <span class="live-badge">● LIVE</span>
     </header>
 
     <div class="stats">
@@ -367,9 +395,7 @@
                 const events = await res.json();
                 renderEvents(events);
                 updateStats(events);
-            } catch (e) {
-                console.error('Fetch error:', e);
-            }
+            } catch (e) { console.error(e); }
         }
 
         function renderEvents(events) {
@@ -393,30 +419,20 @@
           <span class="event-id">#${e.id}</span>
         </div>
         <div class="event-grid">
-          <div class="info-box">
-            <div class="key">Device</div>
-            <div class="val">${e.device_name || '—'}</div>
-          </div>
-          <div class="info-box">
-            <div class="key">IP Address</div>
-            <div class="val">${e.device_ip || '—'}</div>
-          </div>
-          <div class="info-box">
-            <div class="key">Latitude</div>
-            <div class="val">${e.latitude ?? '—'}</div>
-          </div>
-          <div class="info-box">
-            <div class="key">Longitude</div>
-            <div class="val">${e.longitude ?? '—'}</div>
-          </div>
-          <div class="info-box">
-            <div class="key">Received At</div>
-            <div class="val">${fmt(e.received_at)}</div>
-          </div>
+          <div class="info-box"><div class="key">Device</div><div class="val">${e.device_name || '—'}</div></div>
+          <div class="info-box"><div class="key">IP Address</div><div class="val">${e.device_ip || '—'}</div></div>
+          <div class="info-box"><div class="key">Latitude</div><div class="val">${e.latitude ?? '—'}</div></div>
+          <div class="info-box"><div class="key">Longitude</div><div class="val">${e.longitude ?? '—'}</div></div>
+          <div class="info-box"><div class="key">Received At</div><div class="val">${fmt(e.received_at)}</div></div>
         </div>
-        ${e.maps_link
+        <div class="btn-row">
+          ${e.maps_link
                     ? `<a class="map-btn" href="${e.maps_link}" target="_blank">📍 Open in Google Maps</a>`
                     : ''}
+          ${e.session_id
+                    ? `<a class="track-btn" href="/track/${e.session_id}" target="_blank">🔴 Live Track Location</a>`
+                    : ''}
+        </div>
       </div>`).join('');
         }
 
@@ -434,7 +450,6 @@
 
         async function deleteEvent(id) {
             await fetch(`/api/sos/${id}`, { method: 'DELETE' });
-            document.getElementById(`card-${id}`)?.remove();
             loadEvents();
         }
 
@@ -453,7 +468,6 @@
         loadEvents();
         setInterval(loadEvents, 10000);
     </script>
-
 </body>
 
 </html>

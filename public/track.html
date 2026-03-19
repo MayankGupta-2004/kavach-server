@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kavach — Live Tracking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #FFF8F0;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #FF6B2B, #E64A19);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(255, 107, 43, 0.35);
+        }
+
+        header h1 {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        header p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 12px;
+        }
+
+        .live-dot {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Status card */
+        .status-card {
+            background: #fff;
+            border: 1.5px solid #EDE8E0;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .status-card .label {
+            font-size: 11px;
+            color: #6B6880;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .status-card .value {
+            font-size: 15px;
+            color: #1C1B20;
+            font-weight: 700;
+        }
+
+        .status-card .big {
+            font-size: 22px;
+            font-weight: 900;
+            color: #FF6B2B;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .info-box {
+            background: #fff;
+            border: 1.5px solid #EDE8E0;
+            border-radius: 14px;
+            padding: 14px 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .info-box .key {
+            font-size: 10px;
+            color: #6B6880;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .info-box .val {
+            font-size: 14px;
+            color: #1C1B20;
+            font-weight: 700;
+            word-break: break-all;
+        }
+
+        /* Map button */
+        .map-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #FF6B2B, #E64A19);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 800;
+            border-radius: 16px;
+            text-decoration: none;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(255, 107, 43, 0.35);
+            transition: transform 0.15s;
+        }
+
+        .map-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Update timer */
+        .update-info {
+            text-align: center;
+            color: #6B6880;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .update-info span {
+            color: #FF6B2B;
+            font-weight: 700;
+        }
+
+        /* Alert banner */
+        .alert {
+            background: #FFF0EB;
+            border: 1.5px solid rgba(230, 74, 25, 0.25);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-icon {
+            font-size: 24px;
+        }
+
+        .alert-text .title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #E64A19;
+        }
+
+        .alert-text .sub {
+            font-size: 12px;
+            color: #6B6880;
+            margin-top: 2px;
+        }
+
+        /* Not found */
+        .not-found {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6B6880;
+        }
+
+        .not-found .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .not-found h3 {
+            font-size: 18px;
+            color: #1C1B20;
+            margin-bottom: 8px;
+        }
+
+        /* History */
+        .history-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #6B6880;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .history-item {
+            background: #fff;
+            border: 1.5px solid #EDE8E0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item .time {
+            font-size: 12px;
+            color: #6B6880;
+        }
+
+        .history-item .coords {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1C1B20;
+        }
+
+        .history-item a {
+            color: #FF6B2B;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <h1>KAVACH</h1>
+            <p>🚨 Live Location Tracking</p>
+        </div>
+        <div class="live-dot">
+            <div class="dot"></div>
+            LIVE
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div id="content">
+            <div class="not-found">
+                <div class="icon">📍</div>
+                <h3>Loading location...</h3>
+                <p>Fetching latest GPS data</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Get session ID from URL: /track/SOS_123456789
+        const sessionId = window.location.pathname.split('/track/')[1];
+        let updateCount = 0;
+        let locationHistory = [];
+
+        async function fetchLocation() {
+            if (!sessionId) {
+                showError('Invalid tracking link');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/location/${sessionId}`);
+                const data = await res.json();
+
+                if (!data) {
+                    // No live update yet — try SOS events for initial location
+                    const sosRes = await fetch('/api/sos');
+                    const sosEvents = await sosRes.json();
+                    const sos = sosEvents.find(e => e.session_id === sessionId);
+
+                    if (sos) {
+                        renderLocation({
+                            latitude: sos.latitude,
+                            longitude: sos.longitude,
+                            maps_link: sos.maps_link,
+                            device_name: sos.device_name,
+                            device_ip: sos.device_ip,
+                            timestamp: sos.timestamp,
+                            isInitial: true,
+                        });
+                    } else {
+                        showError('Location not found for this SOS session');
+                    }
+                    return;
+                }
+
+                // Add to history
+                if (locationHistory.length === 0 ||
+                    locationHistory[0].timestamp !== data.timestamp) {
+                    locationHistory.unshift(data);
+                    if (locationHistory.length > 10) locationHistory.pop();
+                    updateCount++;
+                }
+
+                renderLocation({ ...data, isInitial: false });
+
+            } catch (e) {
+                console.error('Fetch error:', e);
+            }
+        }
+
+        function renderLocation(data) {
+            const isLive = !data.isInitial;
+            const mapsLink = data.maps_link ||
+                `https://maps.google.com/?q=${data.latitude},${data.longitude}`;
+            const lastUpdate = new Date(data.timestamp).toLocaleTimeString();
+
+            document.getElementById('content').innerHTML = `
+
+      <!-- SOS Alert banner -->
+      <div class="alert">
+        <div class="alert-icon">🚨</div>
+        <div class="alert-text">
+          <div class="title">SOS ALERT — ${data.device_name || 'Unknown Device'}</div>
+          <div class="sub">Tracking ID: ${sessionId}</div>
+        </div>
+      </div>
+
+      <!-- Last known location -->
+      <div class="status-card">
+        <div class="label">${isLive ? '📍 Live Location' : '📍 Last Known Location'}</div>
+        <div class="big">${data.latitude?.toFixed(6)}, ${data.longitude?.toFixed(6)}</div>
+        <div style="margin-top:6px">
+          <span style="font-size:12px;color:#6B6880">
+            Last updated: ${lastUpdate}
+            ${isLive ? ` &nbsp;•&nbsp; <span style="color:#FF6B2B;font-weight:700">${updateCount} update${updateCount !== 1 ? 's' : ''}</span>` : ' (Initial position)'}
+          </span>
+        </div>
+      </div>
+
+      <!-- Open in Maps -->
+      <a class="map-btn" href="${mapsLink}" target="_blank">
+        📍 Open Live Location in Google Maps
+      </a>
+
+      <!-- Device info -->
+      <div class="grid">
+        <div class="info-box">
+          <div class="key">Device</div>
+          <div class="val">${data.device_name || '—'}</div>
+        </div>
+        <div class="info-box">
+          <div class="key">IP Address</div>
+          <div class="val">${data.device_ip || '—'}</div>
+        </div>
+      </div>
+
+      <!-- Update timer -->
+      <div class="update-info">
+        Auto-refreshes every <span>60 seconds</span> &nbsp;•&nbsp;
+        Location updates every <span>1 minute</span>
+      </div>
+
+      <!-- Location history -->
+      ${locationHistory.length > 1 ? `
+        <div class="history-title">📋 Location History</div>
+        ${locationHistory.map((l, i) => `
+          <div class="history-item">
+            <div>
+              <div class="coords">${l.latitude?.toFixed(5)}, ${l.longitude?.toFixed(5)}</div>
+              <div class="time">${new Date(l.timestamp).toLocaleTimeString()}
+                ${i === 0 ? ' <span style="color:#FF6B2B;font-weight:700">← Latest</span>' : ''}
+              </div>
+            </div>
+            <a href="${l.maps_link}" target="_blank">View →</a>
+          </div>
+        `).join('')}
+      ` : ''}
+    `;
+        }
+
+        function showError(msg) {
+            document.getElementById('content').innerHTML = `
+      <div class="not-found">
+        <div class="icon">❓</div>
+        <h3>${msg}</h3>
+        <p>The tracking link may have expired or is invalid</p>
+      </div>`;
+        }
+
+        // Fetch immediately then every 60 seconds
+        fetchLocation();
+        setInterval(fetchLocation, 60 * 1000);
+    </script>
+
+</body>
+
+</html>
